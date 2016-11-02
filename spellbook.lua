@@ -1,11 +1,7 @@
 local p = {}
 
-local function table_has_value(t, v)
-  if t ~= nil then
-    for _,x in pairs(t) do if x == v then return true end end
-  end
-  return false
-end
+local book_data = mw.loadData('Module:Table of spellbooks')
+local spell_data = mw.loadData('Module:Table of spells')
 
 local function table_keys_sorted(t)
   local keys = {}
@@ -16,8 +12,39 @@ local function table_keys_sorted(t)
   return keys
 end
 
+local function spell_school_link(school)
+  local skill = nil
+  if school == 'Poison' or school == 'Air' or school == 'Fire' or
+     school == 'Ice' or school == 'Earth' then
+    skill = school .. ' Magic'
+  elseif school:sub(-1) ~= 'y' and school:sub(-1) ~= 's' then
+      -- "Necromancy" isn't pluralised as a skill,
+      -- and "Hexes" and "Charms" are already
+      -- pluralized as a magic school.  The others
+      -- are singular as a school, plural as a skill.
+      skill = school .. 's'
+  end
+
+  if skill ~= nil then
+    return '[[' .. skill .. '|' .. school .. ']]'
+  else
+    return '[[' .. school .. ']]'
+  end
+end
+
+local function format_schools(schools, no_link_for)
+  local ret = ''
+  for school in pairs(schools) do
+    if school == no_link_for then
+      ret = ret .. school .. '/'
+    else
+      ret = ret .. spell_school_link(school) .. '/'
+    end
+  end
+  return ret:sub(1, -2)
+end
+
 function p.spellbook_table(frame)
-  local data = mw.loadData('Module:Table of spellbooks')
   local book = frame.args[1]
   if not book then
     return ""
@@ -26,32 +53,29 @@ function p.spellbook_table(frame)
 |- align="center"
 ! Tile || Spell || Type || Level
 ]==]
-  for _,sp in ipairs(data[book]) do
-    result = result .. "|-\n| " .. sp.image .. " || " ..
-       sp.letter .. " - [[" .. sp.name .. "]] || " .. sp.schools .. 
-       " || " .. sp.level .. "\n"
+  local letters = 'abcdefghijklmnopqrstuvwxyz'
+  for i,name in pairs(book_data[book].spells) do
+    result = result .. "|-\n| [[File:" .. name:lower() .. ".png]] || " ..
+       letters:sub(i, i) .. " - [[" .. name .. "]] || " ..
+       format_schools(spell_data[name].schools) .. " || " ..
+       spell_data[name].level .. "\n"
   end
   result = result .. "|}\n"
   return result
 end
 
 function p.short_spell_list(frame)
-  local data = mw.loadData('Module:Table of spellbooks')
   local book = frame.args[1]
   if not book then
     return ""
   end
   local school = frame.args[2]
   if school == "" then school = nil end
-  local spell_data = nil
-  if school ~= nil then
-    spell_data = mw.loadData('Module:Table of spells')
-  end
   local result = "'''[[" .. book .. "]]''': "
   local spell_list = {}
-  for _,sp in ipairs(data[book]) do
-    if school == nil or table_has_value(spell_data[sp.name]["schools"], school) then
-      table.insert(spell_list, "[[".. sp.name .. "]]")
+  for _,name in pairs(book_data[book].spells) do
+    if school == nil or spell_data[name]["schools"][school] then
+      table.insert(spell_list, "[[".. name .. "]]")
     end
   end
   result = result .. table.concat(spell_list, ", ")
@@ -59,8 +83,6 @@ function p.short_spell_list(frame)
 end
 
 function p.spell_sources(frame)
-  local spell_data = mw.loadData('Module:Table of spells')
-
   local school = frame.args[1]
   local primary_books = frame.args[2]
 
@@ -76,8 +98,8 @@ function p.spell_sources(frame)
 
   local found = {}
   for _,spell in pairs(spell_data) do
-    if table_has_value(spell['schools'], school) then
-      for _,book in pairs(spell['books']) do
+    if spell['schools'][school] then
+      for book in pairs(spell['books']) do
         if not done[book] and not found[book] then
           found[book] = true
         end
