@@ -1,5 +1,12 @@
 local p = {}
 
+local function table_has_value(t, v)
+  if t ~= nil then
+    for _,x in pairs(t) do if x == v then return true end end
+  end
+  return false
+end
+
 function p.spellbook_table(frame)
   local data = mw.loadData('Module:Table of spellbooks')
   local book = frame.args[1]
@@ -25,10 +32,17 @@ function p.short_spell_list(frame)
   if not book then
     return ""
   end
+  local school = frame.args[2]
+  local spell_data = nil
+  if school then
+    spell_data = mw.loadData('Module:Table of spells')
+  end
   local result = "'''[[" .. book .. "]]''': "
   local spell_list = {}
   for _,sp in ipairs(data[book]) do
-    table.insert(spell_list, "[[".. sp.name .. "]]")
+    if school == nil or table_has_value(spell_data[sp.name]["schools"], school) then
+      table.insert(spell_list, "[[".. sp.name .. "]]")
+    end
   end
   result = result .. table.concat(spell_list, ", ")
   return result
