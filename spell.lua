@@ -136,7 +136,7 @@ function p.spell_table(frame)
       end
       ret = ret .. spell_table_line(name, data[name])
   end
-  return ret .. '|}\n'
+  return ret .. '|}'
 end
 
 function p.spell_table_by_level(frame)
@@ -159,7 +159,7 @@ function p.spell_table_by_level(frame)
       end
     end
   end
-  return ret .. '|}\n'
+  return ret .. '|}'
 end
 
 function p.spell_table_by_school(frame)
@@ -176,7 +176,7 @@ function p.spell_table_by_school(frame)
       end
     end
   end
-  return ret .. '|}\n'
+  return ret .. '|}'
 end
 
 function p.spell_table_by_book(frame)
@@ -196,7 +196,7 @@ function p.spell_table_by_book(frame)
       end
     end
   end
-  return ret .. '|}\n'
+  return ret .. '|}'
 end
 
 function p.spell_table_by_flag(frame)
@@ -227,7 +227,7 @@ function p.spell_table_by_flag(frame)
       end
     end
   end
-  return ret .. '|}\n'
+  return ret .. '|}'
 end
 
 return p
