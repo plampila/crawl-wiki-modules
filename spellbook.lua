@@ -47,7 +47,7 @@ end
 function p.spellbook_table(frame)
   local book = frame.args[1]
   if not book then
-    return ""
+    return ''
   end
   local result = [==[{| cellpadding="5" border="1"
 |- align="center"
@@ -55,30 +55,30 @@ function p.spellbook_table(frame)
 ]==]
   local letters = 'abcdefghijklmnopqrstuvwxyz'
   for i,name in pairs(book_data[book].spells) do
-    result = result .. "|-\n| [[File:" .. name:lower() .. ".png]] || " ..
-       letters:sub(i, i) .. " - [[" .. name .. "]] || " ..
-       format_schools(spell_data[name].schools) .. " || " ..
-       spell_data[name].level .. "\n"
+    result = result .. '|-\n| [[File:' .. name:lower() .. '.png]] || ' ..
+       letters:sub(i, i) .. ' - [[' .. name .. ']] || ' ..
+       format_schools(spell_data[name].schools) .. ' || ' ..
+       spell_data[name].level .. '\n'
   end
-  result = result .. "|}\n"
+  result = result .. '|}\n'
   return result
 end
 
 function p.short_spell_list(frame)
   local book = frame.args[1]
   if not book then
-    return ""
+    return ''
   end
   local school = frame.args[2]
-  if school == "" then school = nil end
+  if school == '' then school = nil end
   local result = "'''[[" .. book .. "]]''': "
   local spell_list = {}
   for _,name in pairs(book_data[book].spells) do
-    if school == nil or spell_data[name]["schools"][school] then
-      table.insert(spell_list, "[[".. name .. "]]")
+    if school == nil or spell_data[name]['schools'][school] then
+      table.insert(spell_list, '[['.. name .. ']]')
     end
   end
-  result = result .. table.concat(spell_list, ", ")
+  result = result .. table.concat(spell_list, ', ')
   return result
 end
 
@@ -87,11 +87,11 @@ function p.spell_sources(frame)
   local primary_books = frame.args[2]
 
   local done = {}
-  local ret = ""
-  if primary_books ~= nil and primary_books ~= "" then
-    ret = ret .. ";Main Texts\n"
-    for book in string.gmatch(primary_books, "[^,]+") do
-      ret = ret .. ":" .. frame:expandTemplate{title = "spellbook2", args = {book, school}} .. "\n"
+  local ret = ''
+  if primary_books ~= nil and primary_books ~= '' then
+    ret = ret .. ';Main Texts\n'
+    for book in string.gmatch(primary_books, '[^,]+') do
+      ret = ret .. ':' .. frame:expandTemplate{title = 'spellbook2', args = {book, school}} .. '\n'
       done[book] = true
     end
   end
@@ -108,10 +108,10 @@ function p.spell_sources(frame)
   end
 
   if next(found) ~= nil then
-    ret = ret .. ";Other Texts\n"
+    ret = ret .. ';Other Texts\n'
     -- TODO: ignore "the" while sorting
     for _,book in ipairs(table_keys_sorted(found)) do
-      ret = ret .. ":" .. frame:expandTemplate{title = "spellbook2", args = {book, school}} .. "\n"
+      ret = ret .. ':' .. frame:expandTemplate{title = 'spellbook2', args = {book, school}} .. '\n'
     end
   end
 

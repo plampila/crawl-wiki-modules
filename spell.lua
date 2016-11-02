@@ -94,10 +94,10 @@ local function format_noise(noise)
 end
 
 local function format_flag(flag)
-  if flag == "MR_CHECK" then
-    return "MR check"
+  if flag == 'MR_CHECK' then
+    return 'MR check'
   else
-    return flag:gsub("_", " "):lower():gsub("^%l", string.upper)
+    return flag:gsub('_', ' '):lower():gsub('^%l', string.upper)
   end
 end
 
