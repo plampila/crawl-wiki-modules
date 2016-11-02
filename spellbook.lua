@@ -69,7 +69,7 @@ function p.spell_sources(frame)
   if primary_books ~= nil and primary_books ~= "" then
     ret = ret .. ";Main Texts\n"
     for book in string.gmatch(primary_books, "%P+") do
-      ret = ret .. frame:expandTemplate{title = "spellbook2", args = {book, school}} .. "\n"
+      ret = ret .. ":" .. frame:expandTemplate{title = "spellbook2", args = {book, school}} .. "\n"
       done[book] = true
     end
   end
@@ -89,7 +89,7 @@ function p.spell_sources(frame)
     ret = ret .. ";Other Texts\n"
     -- TODO: ignore "the" while sorting
     for _,book in ipairs(table_keys_sorted(found)) do
-      ret = ret .. frame:expandTemplate{title = "spellbook2", args = {book, school}} .. "\n"
+      ret = ret .. ":" .. frame:expandTemplate{title = "spellbook2", args = {book, school}} .. "\n"
     end
   end
 
