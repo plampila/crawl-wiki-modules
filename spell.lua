@@ -1,13 +1,6 @@
 local p = {}
 local data = mw.loadData('Module: Table of spells')
 
-local function table_has_value(t, v)
-  if t ~= nil then
-    for _,x in pairs(t) do if x == v then return true end end
-  end
-  return false
-end
-
 local function table_keys_sorted(t)
   local keys = {}
   for k in pairs(t) do
@@ -72,7 +65,7 @@ end
 
 local function format_schools(schools, no_link_for)
   local ret = ''
-  for _,school in ipairs(schools) do
+  for school in pairs(schools) do
     if school == no_link_for then
       ret = ret .. school .. '/'
     else
@@ -85,10 +78,26 @@ end
 local function format_range(range)
   if range == nil then
     return ''
-  elseif type(range) == 'table' then
-    return range[1] .. '-' .. range[2]
+  elseif range.min == range.max then
+    return range.min
   else
-    return range
+    return range.min .. '-' .. range.max
+  end
+end
+
+local function format_noise(noise)
+  if noise == nil then
+    return ''
+  else
+    return math.max(noise.casting, noise.effect)
+  end
+end
+
+local function format_flag(flag)
+  if flag == "MR_CHECK" then
+    return "MR check"
+  else
+    return flag:gsub("_", " "):lower():gsub("^%l", string.upper)
   end
 end
 
@@ -97,15 +106,15 @@ local function format_flags(flags)
     return ''
   end
   local ret = ''
-  for _,flag in ipairs(flags) do
-    ret = ret .. flag .. ', '
+  for flag in pairs(flags) do
+    ret = ret .. format_flag(flag) .. ', '
   end
   return ret:sub(1, -3)
 end
 
 local function format_books(books)
   local ret = ''
-  for _,book in ipairs(books) do
+  for book in pairs(books) do
     ret = ret .. '[[' .. book .. ']]<br>'
   end
   return ret:sub(1, -5)
@@ -116,9 +125,9 @@ local function spell_table_line(name, info, no_link_for)
          '|style="padding-left:1em"|[[' .. name .. ']]\n' ..
          '|' .. format_schools(info['schools'], no_link_for) .. '\n' ..
          '|' .. info['level'] .. '\n' ..
-         '|' .. info['cap'] .. '\n' ..
+         '|' .. info['power cap'] .. '\n' ..
          '|' .. format_range(info['range']) .. '\n' ..
-         '|' .. info['noise'] .. '\n' ..
+         '|' .. format_noise(info['noise']) .. '\n' ..
          '|' .. format_flags(info['flags']) .. '\n' ..
          '|' .. format_books(info['books']) .. '\n' ..
          '|----\n'
@@ -149,7 +158,7 @@ function p.spell_table_by_level(frame)
     local found = false
     for _, name in ipairs(table_keys_sorted(data)) do
       if data[name]['level'] == level then
-        if school == nil or table_has_value(data[name]['schools'], school) then
+        if school == nil or data[name]['schools'][school] then
           if not found then
             found = true
             ret = ret .. spell_table_section('Level ' .. level)
@@ -171,7 +180,7 @@ function p.spell_table_by_school(frame)
   for _,school in ipairs(schools) do
     ret = ret .. spell_table_section(spell_school_link(school))
     for _, name in ipairs(names_by_level(data)) do
-      if table_has_value(data[name]['schools'], school) then
+      if data[name]['schools'][school] then
         ret = ret .. spell_table_line(name, data[name], school)
       end
     end
@@ -182,7 +191,7 @@ end
 function p.spell_table_by_book(frame)
   local books = {}
   for _,spell in pairs(data) do if spell['books'] ~= nil then
-    for _,book in pairs(spell['books']) do
+    for book in pairs(spell['books']) do
       books[book] = true
     end
   end end
@@ -191,7 +200,7 @@ function p.spell_table_by_book(frame)
   for _,book in ipairs(table_keys_sorted(books)) do
     ret = ret .. spell_table_section('[[' .. book .. ']]')
     for _, name in ipairs(names_by_level(data)) do
-      if table_has_value(data[name]['books'], book) then
+      if data[name]['books'][book] then
         ret = ret .. spell_table_line(name, data[name])
       end
     end
@@ -202,7 +211,7 @@ end
 function p.spell_table_by_flag(frame)
   local flags = {}
   for _,spell in pairs(data) do if spell['flags'] ~= nil then
-    for _,flag in pairs(spell['flags']) do
+    for flag,_ in pairs(spell['flags']) do
       flags[flag] = true
     end
   end end
@@ -217,12 +226,13 @@ function p.spell_table_by_flag(frame)
   end
 
   for _,flag in ipairs(table_keys_sorted(flags)) do
-    ret = ret .. spell_table_section(flag) ..
+    ret = ret .. spell_table_section(format_flag(flag)) ..
       '| colspan=9 |' ..
-      frame:expandTemplate{title = 'SpellFlagDesc ' .. flag, args = {}} ..
+      frame:expandTemplate{title = 'SpellFlagDesc ' .. format_flag(flag),
+        args = {}} ..
       '\n|----\n'
     for _, name in ipairs(names_by_level(data)) do
-      if table_has_value(data[name]['flags'], flag) then
+      if data[name]['flags'][flag] then
         ret = ret .. spell_table_line(name, data[name])
       end
     end
