@@ -139,9 +139,9 @@ function p.spell_table_by_level(frame)
 end
 
 function p.spell_table_by_school(frame)
-  local schools = { 'Conjuration', 'Hexes', 'Charms', 'Summoning',
-    'Necromancy', 'Translocation', 'Transmutation', 'Fire', 'Ice', 'Air',
-    'Earth', 'Poison' }
+  local schools = { 'Air', 'Charms', 'Conjuration', 'Earth', 'Fire', 'Hexes',
+    'Ice', 'Necromancy', 'Poison', 'Summoning', 'Translocation',
+    'Transmutation' }
 
   local ret = '==Spells==\n' .. spell_table_header()
   for _,school in pairs(schools) do
