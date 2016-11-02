@@ -129,7 +129,7 @@ function p.spell_table_by_level(frame)
       if school == nil or table_has_value(data[name]['schools'], school) then
         if not found then
           found = true
-          ret = ret .. spell_table_section(level)
+          ret = ret .. spell_table_section('Level ' .. level)
         end
         ret = ret .. spell_table_line(name, data[name])
       end
