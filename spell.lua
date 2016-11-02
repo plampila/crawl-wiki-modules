@@ -139,6 +139,13 @@ function p.spell_table_by_level(frame)
 end
 
 function p.spell_table_by_school(frame)
+  table.sort(spell_names, function(a, b)
+    if data[a].level == data[b].level then
+      return a < b
+    else
+      return data[a].level < data[b].level
+    end
+  end)
   local schools = { 'Air', 'Charms', 'Conjuration', 'Earth', 'Fire', 'Hexes',
     'Ice', 'Necromancy', 'Poison', 'Summoning', 'Translocation',
     'Transmutation' }
