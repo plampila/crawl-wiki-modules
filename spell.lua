@@ -169,7 +169,7 @@ function p.spell_table_by_school(frame)
 
   local ret = '==Spells==\n' .. spell_table_header()
   for _,school in ipairs(schools) do
-    ret = ret .. spell_table_section(school)
+    ret = ret .. spell_table_section(spell_school_link(school))
     for _, name in ipairs(names_by_level(data)) do
       if table_has_value(data[name]['schools'], school) then
         ret = ret .. spell_table_line(name, data[name], school)
