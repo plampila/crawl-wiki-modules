@@ -33,11 +33,11 @@ local function spell_table_section(heading)
 end
 
 local function spell_school_link(school)
-  local skill = nil;
+  local skill = nil
   if school == 'Poison' or school == 'Air' or school == 'Fire' or
      school == 'Ice' or school == 'Earth' then
     skill = school .. ' Magic'
-  elseif school:sub(-1) ~= 'y' and not school:sub(-1) ~= 's' then
+  elseif school:sub(-1) ~= 'y' and school:sub(-1) ~= 's' then
       -- "Necromancy" isn't pluralised as a skill,
       -- and "Hexes" and "Charms" are already
       -- pluralized as a magic school.  The others
