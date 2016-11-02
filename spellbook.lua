@@ -68,7 +68,7 @@ function p.spell_sources(frame)
   local ret = ""
   if primary_books ~= nil and primary_books ~= "" then
     ret = ret .. ";Main Texts\n"
-    for book in string.gmatch(primary_books, "%P+") do
+    for book in string.gmatch(primary_books, "[^,]+") do
       ret = ret .. ":" .. frame:expandTemplate{title = "spellbook2", args = {book, school}} .. "\n"
       done[book] = true
     end
