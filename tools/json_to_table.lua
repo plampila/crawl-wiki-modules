@@ -16,20 +16,20 @@ local sort_nocase  = function(k, o) -- k=keys, o=original table
 end
 
 if arg[1] == 'spells' then
-    print('-- Table of spells (' .. data.version .. ')')
-    print('return ' .. serpent.block(data.spells, {
-        fatal = true,
-        comment = false,
-        sortkeys = sort_nocase,
-    }))
+  print('-- Table of spells (' .. data.version .. ')')
+  print('return ' .. serpent.block(data.spells, {
+    fatal = true,
+    comment = false,
+    sortkeys = sort_nocase,
+  }))
 elseif arg[1] == 'spellbooks' then
-    print('-- Table of spell books (' .. data.version .. ')')
-    print('local m = ' .. serpent.block(data.spellbooks, {
-        fatal = true,
-        comment = false,
-        sortkeys = sort_nocase,
-    }))
+  print('-- Table of spell books (' .. data.version .. ')')
+  print('local m = ' .. serpent.block(data.spellbooks, {
+    fatal = true,
+    comment = false,
+    sortkeys = sort_nocase,
+  }))
 else
-    io.stderr:write('Usage: ' .. arg[0] .. ' <module>\n');
-    io.stderr:write('Available modules: spells, spellbooks\n');
+  io.stderr:write('Usage: ' .. arg[0] .. ' <module>\n');
+  io.stderr:write('Available modules: spells, spellbooks\n');
 end

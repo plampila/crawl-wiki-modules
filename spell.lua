@@ -49,11 +49,11 @@ local function spell_school_link(school)
      school == 'Ice' or school == 'Earth' then
     skill = school .. ' Magic'
   elseif school:sub(-1) ~= 'y' and school:sub(-1) ~= 's' then
-      -- "Necromancy" isn't pluralised as a skill,
-      -- and "Hexes" and "Charms" are already
-      -- pluralized as a magic school.  The others
-      -- are singular as a school, plural as a skill.
-      skill = school .. 's'
+    -- "Necromancy" isn't pluralised as a skill,
+    -- and "Hexes" and "Charms" are already
+    -- pluralized as a magic school.  The others
+    -- are singular as a school, plural as a skill.
+    skill = school .. 's'
   end
 
   if skill ~= nil then
@@ -139,11 +139,11 @@ function p.spell_table(frame)
   local ret = '==Spells==\n' .. spell_table_header()
   local c = nil
   for _, name in ipairs(table_keys_sorted(data)) do
-      if name:sub(1, 1) ~= c then
-        c = name:sub(1, 1)
-        ret = ret .. spell_table_section(c)
-      end
-      ret = ret .. spell_table_line(name, data[name])
+    if name:sub(1, 1) ~= c then
+      c = name:sub(1, 1)
+      ret = ret .. spell_table_section(c)
+    end
+    ret = ret .. spell_table_line(name, data[name])
   end
   return ret .. '|}'
 end

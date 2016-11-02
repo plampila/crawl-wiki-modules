@@ -18,11 +18,11 @@ local function spell_school_link(school)
      school == 'Ice' or school == 'Earth' then
     skill = school .. ' Magic'
   elseif school:sub(-1) ~= 'y' and school:sub(-1) ~= 's' then
-      -- "Necromancy" isn't pluralised as a skill,
-      -- and "Hexes" and "Charms" are already
-      -- pluralized as a magic school.  The others
-      -- are singular as a school, plural as a skill.
-      skill = school .. 's'
+    -- "Necromancy" isn't pluralised as a skill,
+    -- and "Hexes" and "Charms" are already
+    -- pluralized as a magic school.  The others
+    -- are singular as a school, plural as a skill.
+    skill = school .. 's'
   end
 
   if skill ~= nil then
