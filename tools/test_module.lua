@@ -1,3 +1,8 @@
+if #arg < 1 then
+  print('Usage: ' .. arg[0] .. ' <module> [function] [arguments...]')
+  return 1
+end
+
 mw = {}
 function mw.loadData(name)
   return require(name:lower():gsub(' ', '_'):gsub('module:_?', '', 1))
@@ -5,13 +10,15 @@ end
 
 local frame = {}
 frame.args = {}
-function frame.expandTemplate(_, data)
-  return '{{' .. data.title .. '}}'
+for i=3,#arg,1 do
+  frame.args[i - 2] = arg[i]
 end
-
-if #arg < 1 then
-  print('Usage: ' .. arg[0] .. ' <module> [function]')
-  return 1
+function frame.expandTemplate(_, data)
+  local ret = '{{' .. data.title
+  for _,x in pairs(data.args) do
+    ret = ret .. '|' .. x
+  end
+  return ret .. '}}'
 end
 
 local module = require(arg[1])
