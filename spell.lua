@@ -220,7 +220,7 @@ function p.spell_table_by_flag(frame)
 
   ret = ret .. spell_table_section('No flags')
   for _, name in ipairs(names_by_level(data)) do
-    if data[name]['flags'] == nil then
+    if next(data[name]['flags']) == nil then
       ret = ret .. spell_table_line(name, data[name])
     end
   end
