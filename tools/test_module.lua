@@ -15,8 +15,12 @@ for i=3,#arg,1 do
 end
 function frame.expandTemplate(_, data)
   local ret = '{{' .. data.title
-  for _,x in pairs(data.args) do
-    ret = ret .. '|' .. x
+  for y,x in pairs(data.args) do
+    if type(y) == 'number' then
+      ret = ret .. '|' .. x
+    else
+      ret = ret .. '|' .. y .. '=' .. x
+    end
   end
   return ret .. '}}'
 end
