@@ -24,7 +24,7 @@ if arg[1] == 'spells' then
   }))
 elseif arg[1] == 'spellbooks' then
   print('-- Table of spell books (' .. data.version .. ')')
-  print('local m = ' .. serpent.block(data.spellbooks, {
+  print('return ' .. serpent.block(data.spellbooks, {
     fatal = true,
     comment = false,
     sortkeys = sort_nocase,
