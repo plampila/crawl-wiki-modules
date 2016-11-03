@@ -49,6 +49,7 @@ function p.spellbook_table(frame)
   if not book then
     return ''
   end
+  book = book:gsub("^Book of", "book of")
   local result = [==[{| cellpadding="5" border="1"
 |- align="center"
 ! Tile || Spell || Type || Level
@@ -71,8 +72,9 @@ function p.short_spell_list(frame)
   end
   local school = frame.args[2]
   if school == '' then school = nil end
-  local result = "'''[[" .. book .. "]]''': "
+  local result = "'''[[" .. book:gsub("^%l", string.upper) .. "]]''': "
   local spell_list = {}
+  book = book:gsub("^Book of", "book of")
   for _,name in pairs(book_data[book].spells) do
     if school == nil or spell_data[name]['schools'][school] then
       table.insert(spell_list, '[['.. name .. ']]')
@@ -92,7 +94,7 @@ function p.spell_sources(frame)
     ret = ret .. ';Main Texts\n'
     for book in string.gmatch(primary_books, '[^,]+') do
       ret = ret .. ':' .. frame:expandTemplate{title = 'spellbook2', args = {book, school}} .. '\n'
-      done[book] = true
+      done[book:gsub("^Book of", "book of")] = true
     end
   end
 
