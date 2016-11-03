@@ -240,4 +240,38 @@ function p.spell_table_by_flag(frame)
   return ret .. '|}'
 end
 
+function p.spell_info(frame)
+  local name = frame.args[1]
+  if not name or name == "" then
+    name = mw.title.getCurrentTitle().text
+  end
+  local spell = data[name]
+  if not spell then
+    return name
+  end
+
+  local args = {}
+  args.name = spell.name
+  args.level = spell.level
+  args.school1 = ''
+  args.school2 = ''
+  args.school3 = ''
+  for i,school in ipairs(table_keys_sorted(spell.schools)) do
+    args["school" .. i] = spell_school_link(school)
+    i = i + 1
+  end
+  args.sources = format_books(spell.books)
+  args.castingnoise = spell.noise.casting
+  args.spellnoise = spell.noise.effect
+
+  local infobox = frame:expandTemplate{title = 'spell', args = args}
+
+  local flavour = spell.description
+  if spell.quote then
+    flavour = flavour .. '\n----\n' .. spell.quote:gsub('\n', '<br>')
+  end
+  flavour = frame:expandTemplate{title = 'flavour', args = {flavour}}
+  return infobox .. '\n' .. flavour
+end
+
 return p
