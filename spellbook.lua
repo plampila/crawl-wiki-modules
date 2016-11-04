@@ -46,7 +46,9 @@ end
 
 local function main_school(book)
   local schools = {}
+  local num_spells = 0
   for _,name in pairs(book.spells) do
+    num_spells = num_spells + 1
     for school in pairs(spell_data[name]['schools']) do
       if schools[school] == nil then
         schools[school] = 1
@@ -58,7 +60,7 @@ local function main_school(book)
 
   local found = nil
   for school,count in pairs(schools) do
-    if count == #book.spells then
+    if count == num_spells then
       if found ~= nil then return nil end
       found = school
     end
@@ -67,7 +69,7 @@ local function main_school(book)
     return found
   end
   for school,count in pairs(schools) do
-    if count == #book.spells - 1 then
+    if count == num_spells - 1 then
       if found ~= nil then return nil end
       found = school
     end
