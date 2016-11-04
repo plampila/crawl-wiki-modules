@@ -3,7 +3,7 @@ local p = {}
 -- Used in Template:Monster by Property:Hit_dice
 function p.first_word(frame)
   local text = frame.args[1]
-  for token in string.gmatch(text, "[^%s]+") do
+  for token in string.gmatch(text, "[^%s,]+") do
     return token
   end
 end
@@ -31,5 +31,13 @@ end
 function p.fix_monster_intelligence(frame)
   return p.fix_monster_size(frame)
 end
+
+-- Used in Template:Armour
+function p.fix_gdr(frame)
+  local text = frame.args[1]
+  new_text, _ = string.gsub(text, "%%", "")
+  return new_text
+end
+
 
 return p
