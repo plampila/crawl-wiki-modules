@@ -12,33 +12,14 @@ local function table_keys_sorted(t)
   return keys
 end
 
-local function spell_school_link(school)
-  local skill = nil
-  if school == 'Poison' or school == 'Air' or school == 'Fire' or
-     school == 'Ice' or school == 'Earth' then
-    skill = school .. ' Magic'
-  elseif school:sub(-1) ~= 'y' and school:sub(-1) ~= 's' then
-    -- "Necromancy" isn't pluralised as a skill,
-    -- and "Hexes" and "Charms" are already
-    -- pluralized as a magic school.  The others
-    -- are singular as a school, plural as a skill.
-    skill = school .. 's'
-  end
-
-  if skill ~= nil then
-    return '[[' .. skill .. '|' .. school .. ']]'
-  else
-    return '[[' .. school .. ']]'
-  end
-end
-
-local function format_schools(schools, no_link_for)
+local function format_schools(frame, schools, no_link_for)
   local ret = ''
   for school in pairs(schools) do
     if school == no_link_for then
       ret = ret .. school .. '/'
     else
-      ret = ret .. spell_school_link(school) .. '/'
+      ret = ret ..
+        frame:expandTemplate{title = 'schoollink', args = {school}} .. '/'
     end
   end
   return ret:sub(1, -2)
@@ -82,7 +63,7 @@ function p.spellbook_table(frame)
   if not book then
     return ''
   end
-  book = book:gsub("^Book of", "book of")
+  book = book:gsub('^Book of', 'book of')
   local result = [==[{| cellpadding="5" border="1"
 |- align="center"
 ! Tile || Spell || Type || Level
@@ -91,7 +72,7 @@ function p.spellbook_table(frame)
   for i,name in pairs(book_data[book].spells) do
     result = result .. '|-\n| [[File:' .. name:lower() .. '.png]] || ' ..
        letters:sub(i, i) .. ' - [[' .. name .. ']] || ' ..
-       format_schools(spell_data[name].schools) .. ' || ' ..
+       format_schools(frame, spell_data[name].schools) .. ' || ' ..
        spell_data[name].level .. '\n'
   end
   result = result .. '|}\n'
@@ -105,9 +86,9 @@ function p.short_spell_list(frame)
   end
   local school = frame.args[2]
   if school == '' then school = nil end
-  local result = "'''[[" .. book:gsub("^%l", string.upper) .. "]]''': "
+  local result = "'''[[" .. book:gsub('^%l', string.upper) .. "]]''': "
   local spell_list = {}
-  book = book:gsub("^Book of", "book of")
+  book = book:gsub('^Book of', 'book of')
   for _,name in pairs(book_data[book].spells) do
     if school == nil or spell_data[name]['schools'][school] then
       table.insert(spell_list, '[['.. name .. ']]')
@@ -127,7 +108,7 @@ function p.spell_sources(frame)
     ret = ret .. ';Main Texts\n'
     for book in string.gmatch(primary_books, '[^,]+') do
       ret = ret .. ':' .. frame:expandTemplate{title = 'spellbook2', args = {book, school}} .. '\n'
-      done[book:gsub("^Book of", "book of")] = true
+      done[book:gsub('^Book of', 'book of')] = true
     end
   end
 
@@ -155,17 +136,17 @@ end
 
 function p.spellbook_info(frame)
   local name = frame.args[1]
-  if not name or name == "" then
+  if not name or name == '' then
     name = mw.title.getCurrentTitle().text
   end
-  name = name:gsub("^Book of", "book of")
+  name = name:gsub('^Book of', 'book of')
   local book = book_data[name]
   if not book then
     return name
   end
 
   local args = {}
-  args.name = book.name:gsub("^%l", string.upper)
+  args.name = book.name:gsub('^%l', string.upper)
   args.rarity = book.rarity
 
   local school = main_school(book)
