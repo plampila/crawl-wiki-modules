@@ -43,33 +43,14 @@ local function spell_table_section(heading)
          '|----\n'
 end
 
-local function spell_school_link(school)
-  local skill = nil
-  if school == 'Poison' or school == 'Air' or school == 'Fire' or
-     school == 'Ice' or school == 'Earth' then
-    skill = school .. ' Magic'
-  elseif school:sub(-1) ~= 'y' and school:sub(-1) ~= 's' then
-    -- "Necromancy" isn't pluralised as a skill,
-    -- and "Hexes" and "Charms" are already
-    -- pluralized as a magic school.  The others
-    -- are singular as a school, plural as a skill.
-    skill = school .. 's'
-  end
-
-  if skill ~= nil then
-    return '[[' .. skill .. '|' .. school .. ']]'
-  else
-    return '[[' .. school .. ']]'
-  end
-end
-
-local function format_schools(schools, no_link_for)
+local function format_schools(frame, schools, no_link_for)
   local ret = ''
   for school in pairs(schools) do
     if school == no_link_for then
       ret = ret .. school .. '/'
     else
-      ret = ret .. spell_school_link(school) .. '/'
+      ret = ret ..
+        frame:expandTemplate{title = 'schoollink', args = {school}} .. '/'
     end
   end
   return ret:sub(1, -2)
@@ -120,10 +101,10 @@ local function format_books(books)
   return ret:sub(1, -5)
 end
 
-local function spell_table_line(name, info, no_link_for)
+local function spell_table_line(frame, name, info, no_link_for)
   return '|[[File:' .. name:lower() .. '.png]]\n' ..
          '|style="padding-left:1em"|[[' .. name .. ']]\n' ..
-         '|' .. format_schools(info['schools'], no_link_for) .. '\n' ..
+         '|' .. format_schools(frame, info['schools'], no_link_for) .. '\n' ..
          '|' .. info['level'] .. '\n' ..
          '|' .. info['power cap'] .. '\n' ..
          '|' .. format_range(info['range']) .. '\n' ..
@@ -143,7 +124,7 @@ function p.spell_table(frame)
       c = name:sub(1, 1)
       ret = ret .. spell_table_section(c)
     end
-    ret = ret .. spell_table_line(name, data[name])
+    ret = ret .. spell_table_line(frame, name, data[name])
   end
   return ret .. '|}'
 end
@@ -163,7 +144,7 @@ function p.spell_table_by_level(frame)
             found = true
             ret = ret .. spell_table_section('Level ' .. level)
           end
-          ret = ret .. spell_table_line(name, data[name], school)
+          ret = ret .. spell_table_line(frame, name, data[name], school)
         end
       end
     end
@@ -178,10 +159,11 @@ function p.spell_table_by_school(frame)
 
   local ret = '==Spells==\n' .. spell_table_header()
   for _,school in ipairs(schools) do
-    ret = ret .. spell_table_section(spell_school_link(school))
+    ret = ret .. spell_table_section(
+      frame:expandTemplate{title = 'schoollink', args = {school}})
     for _, name in ipairs(names_by_level(data)) do
       if data[name]['schools'][school] then
-        ret = ret .. spell_table_line(name, data[name], school)
+        ret = ret .. spell_table_line(frame, name, data[name], school)
       end
     end
   end
@@ -201,7 +183,7 @@ function p.spell_table_by_book(frame)
     ret = ret .. spell_table_section('[[' .. book .. ']]')
     for _, name in ipairs(names_by_level(data)) do
       if data[name]['books'][book] then
-        ret = ret .. spell_table_line(name, data[name])
+        ret = ret .. spell_table_line(frame, name, data[name])
       end
     end
   end
@@ -221,7 +203,7 @@ function p.spell_table_by_flag(frame)
   ret = ret .. spell_table_section('No flags')
   for _, name in ipairs(names_by_level(data)) do
     if next(data[name]['flags']) == nil then
-      ret = ret .. spell_table_line(name, data[name])
+      ret = ret .. spell_table_line(frame, name, data[name])
     end
   end
 
@@ -233,7 +215,7 @@ function p.spell_table_by_flag(frame)
       '\n|----\n'
     for _, name in ipairs(names_by_level(data)) do
       if data[name]['flags'][flag] then
-        ret = ret .. spell_table_line(name, data[name])
+        ret = ret .. spell_table_line(frame, name, data[name])
       end
     end
   end
@@ -242,7 +224,7 @@ end
 
 function p.spell_info(frame)
   local name = frame.args[1]
-  if not name or name == "" then
+  if not name or name == '' then
     name = mw.title.getCurrentTitle().text
   end
   local spell = data[name]
@@ -257,7 +239,7 @@ function p.spell_info(frame)
   args.school2 = ''
   args.school3 = ''
   for i,school in ipairs(table_keys_sorted(spell.schools)) do
-    args["school" .. i] = spell_school_link(school)
+    args['school' .. i] = spell_school_link(school)
     i = i + 1
   end
   args.sources = format_books(spell.books)
