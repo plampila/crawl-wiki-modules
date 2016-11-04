@@ -39,4 +39,20 @@ function p.fix_gdr(frame)
   return new_text
 end
 
+-- Used in Template:Schoollink
+function p.school_to_skill(frame)
+  local school = frame.args[1]
+  if school == 'Poison' or school == 'Air' or school == 'Fire' or
+     school == 'Ice' or school == 'Earth' then
+    return school .. ' Magic'
+  elseif school:sub(-1) == 'y' or school:sub(-1) == 's' then
+    -- "Necromancy" isn't pluralised as a skill, and "Hexes" and "Charms" are
+    -- already pluralized as a magic school. The others are singular as a
+    -- school, plural as a skill.
+    return school
+  else
+    return school .. 's'
+  end
+end
+
 return p
