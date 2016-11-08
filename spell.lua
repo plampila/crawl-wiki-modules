@@ -10,6 +10,13 @@ local function table_keys_sorted(t)
   return keys
 end
 
+local function empty_table(t)
+    for _ in pairs(t) do
+        return false
+    end
+    return true
+end
+
 local function names_by_level()
   local names = table_keys_sorted(data)
   table.sort(names, function(a, b)
@@ -202,7 +209,7 @@ function p.spell_table_by_flag(frame)
 
   ret = ret .. spell_table_section('No flags')
   for _, name in ipairs(names_by_level(data)) do
-    if next(data[name]['flags']) == nil then
+    if empty_table(data[name]['flags']) then
       ret = ret .. spell_table_line(frame, name, data[name])
     end
   end
