@@ -89,13 +89,15 @@ local function format_flag(flag)
   end
 end
 
-local function format_flags(flags)
+local function format_flags(flags, ignored)
   if flags == nil then
     return ''
   end
   local ret = ''
   for flag in pairs(flags) do
-    ret = ret .. format_flag(flag) .. ', '
+    if not ignored or not ignored[flag] then
+      ret = ret .. format_flag(flag) .. ', '
+    end
   end
   return ret:sub(1, -3)
 end
@@ -229,6 +231,47 @@ function p.spell_table_by_flag(frame)
   return ret .. '|}'
 end
 
+local function format_hated_by(flags)
+    local output = ''
+    if flags.HASTY then
+        output = output .. '[[Cheibriados]]<br>'
+    end
+    if flags.CORPSE_VIOLATING then
+        output = output .. '[[Fedhas]]<br>'
+    end
+    if flags.UNHOLY then
+        output = output .. '[[Elyvilon]]<br>'
+    end
+    if flags.UNHOLY then
+        output = output .. '[[The Shining One]]<br>'
+    end
+    if flags.CHAOTIC or flags.UNCLEAN or flags.UNHOLY then
+        output = output .. '[[Zin]]<br>'
+    end
+    return output:sub(1, -5)
+end
+
+local function format_targetting(flags)
+    local style = nil
+    if flags.DIR then
+        style = 'Direction'
+    elseif flags.DIR_OR_TARGET then
+        style = 'Target or direction'
+    elseif flags.TARGET then
+        style = 'Smite'
+    end
+    if style then
+        if flags.OBJ and flags.NOT_SELF then
+            return style .. ' (object, not self)'
+        elseif flags.OBJ then
+            return style .. ' (object)'
+        elseif flags.NOT_SELF then
+            return style .. ' (not self)'
+        end
+    end
+    return style
+end
+
 function p.spell_info(frame)
   local name = frame.args[1]
   if not name or name == '' then
@@ -242,16 +285,33 @@ function p.spell_info(frame)
   local args = {}
   args.name = spell.name
   args.level = spell.level
-  args.school1 = ''
-  args.school2 = ''
-  args.school3 = ''
   for i,school in ipairs(table_keys_sorted(spell.schools)) do
-    args['school' .. i] = spell_school_link(school)
+    args['school' .. i] =
+      frame:expandTemplate{title = 'schoollink', args = {school}}
     i = i + 1
   end
   args.sources = format_books(spell.books)
   args.castingnoise = spell.noise.casting
   args.spellnoise = spell.noise.effect
+  args['power cap'] = spell['power cap']
+  args.targetting = format_targetting(spell.flags)
+  args.range = format_range(spell.range)
+  args.rarity = spell.rarity
+  args['hated by'] = format_hated_by(spell.flags)
+  args.flags = format_flags(spell.flags, {
+    CHAOTIC = true,
+    CORPSE_VIOLATING = true,
+    DIR = true,
+    DIR_OR_TARGET = true,
+    HASTY = true,
+    MONS_ABJURE = true,
+    NEEDS_TRACER = true,
+    NOT_SELF = true,
+    OBJ = true,
+    TARGET = true,
+    UNCLEAN = true,
+    UNHOLY = true,
+  })
 
   local infobox = frame:expandTemplate{title = 'spell', args = args}
 
