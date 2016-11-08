@@ -1,3 +1,12 @@
+local function table_keys_sorted(t)
+  local keys = {}
+  for k in pairs(t) do
+    table.insert(keys, k)
+  end
+  table.sort(keys)
+  return keys
+end
+
 if #arg < 1 then
   print('Usage: ' .. arg[0] .. ' <module> [function] [arguments...]')
   return 1
@@ -15,11 +24,11 @@ for i=3,#arg,1 do
 end
 function frame.expandTemplate(_, data)
   local ret = '{{' .. data.title
-  for y,x in pairs(data.args) do
-    if type(y) == 'number' then
-      ret = ret .. '|' .. x
+  for _,name in ipairs(table_keys_sorted(data.args)) do
+    if type(name) == 'number' then
+      ret = ret .. '|' .. data.args[name]
     else
-      ret = ret .. '|' .. y .. '=' .. x
+      ret = ret .. '|' .. name .. '=' .. data.args[name]
     end
   end
   return ret .. '}}'
