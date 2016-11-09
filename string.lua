@@ -57,7 +57,7 @@ end
 
 -- Used for getting correct sort key for categories
 function p.sort_key(frame)
-  local name = frame.args[1]
+  local name = mw.title.getCurrentTitle().text
   local key = name
     :gsub('^[Bb]ook of ', '')
     :gsub('^[Aa] ', '')
