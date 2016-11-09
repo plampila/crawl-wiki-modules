@@ -1,5 +1,6 @@
 local p = {}
 local data = mw.loadData('Module: Table of spells')
+local RANGE_LOS = 7
 
 local function table_keys_sorted(t)
   local keys = {}
@@ -67,7 +68,11 @@ local function format_range(range)
   if range == nil then
     return ''
   elseif range.min == range.max then
-    return range.min
+    if range.min == RANGE_LOS then
+      return 'LOS'
+    else
+      return range.min
+    end
   else
     return range.min .. '-' .. range.max
   end
