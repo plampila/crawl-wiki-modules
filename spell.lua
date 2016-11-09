@@ -52,7 +52,7 @@ end
 
 local function format_schools(frame, schools, no_link_for)
   local ret = ''
-  for school in pairs(schools) do
+  for _, school in ipairs(table_keys_sorted(schools)) do
     if school == no_link_for then
       ret = ret .. school .. '/'
     else
@@ -94,7 +94,7 @@ local function format_flags(flags, ignored)
     return ''
   end
   local ret = ''
-  for flag in pairs(flags) do
+  for _, flag in ipairs(table_keys_sorted(flags)) do
     if not ignored or not ignored[flag] then
       ret = ret .. format_flag(flag) .. ', '
     end
@@ -104,7 +104,7 @@ end
 
 local function format_books(books)
   local ret = ''
-  for book in pairs(books) do
+  for _, book in ipairs(table_keys_sorted(books)) do
     ret = ret .. '[[' .. book .. ']]<br>'
   end
   return ret:sub(1, -5)
@@ -216,7 +216,7 @@ function p.spell_table_by_flag(frame)
     end
   end
 
-  for _,flag in ipairs(table_keys_sorted(flags)) do
+  for _, flag in ipairs(table_keys_sorted(flags)) do
     ret = ret .. spell_table_section(format_flag(flag)) ..
       '| colspan=9 |' ..
       frame:expandTemplate{title = 'SpellFlagDesc ' .. format_flag(flag),
