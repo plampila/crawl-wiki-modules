@@ -11,10 +11,10 @@ local function table_keys_sorted(t)
 end
 
 local function empty_table(t)
-    for _ in pairs(t) do
-        return false
-    end
-    return true
+  for _ in pairs(t) do
+    return false
+  end
+  return true
 end
 
 local function names_by_level()
@@ -232,44 +232,44 @@ function p.spell_table_by_flag(frame)
 end
 
 local function format_hated_by(flags)
-    local output = ''
-    if flags.HASTY then
-        output = output .. '[[Cheibriados]]<br>'
-    end
-    if flags.CORPSE_VIOLATING then
-        output = output .. '[[Fedhas]]<br>'
-    end
-    if flags.UNHOLY then
-        output = output .. '[[Elyvilon]]<br>'
-    end
-    if flags.UNHOLY then
-        output = output .. '[[The Shining One]]<br>'
-    end
-    if flags.CHAOTIC or flags.UNCLEAN or flags.UNHOLY then
-        output = output .. '[[Zin]]<br>'
-    end
-    return output:sub(1, -5)
+  local output = ''
+  if flags.HASTY then
+    output = output .. '[[Cheibriados]]<br>'
+  end
+  if flags.CORPSE_VIOLATING then
+    output = output .. '[[Fedhas]]<br>'
+  end
+  if flags.UNHOLY then
+    output = output .. '[[Elyvilon]]<br>'
+  end
+  if flags.UNHOLY then
+    output = output .. '[[The Shining One]]<br>'
+  end
+  if flags.CHAOTIC or flags.UNCLEAN or flags.UNHOLY then
+    output = output .. '[[Zin]]<br>'
+  end
+  return output:sub(1, -5)
 end
 
 local function format_targetting(flags)
-    local style = nil
-    if flags.DIR then
-        style = 'Direction'
-    elseif flags.DIR_OR_TARGET then
-        style = 'Target or direction'
-    elseif flags.TARGET then
-        style = 'Smite'
+  local style = nil
+  if flags.DIR then
+    style = 'Direction'
+  elseif flags.DIR_OR_TARGET then
+    style = 'Target or direction'
+  elseif flags.TARGET then
+    style = 'Smite'
+  end
+  if style then
+    if flags.OBJ and flags.NOT_SELF then
+      return style .. ' (object, not self)'
+    elseif flags.OBJ then
+      return style .. ' (object)'
+    elseif flags.NOT_SELF then
+      return style .. ' (not self)'
     end
-    if style then
-        if flags.OBJ and flags.NOT_SELF then
-            return style .. ' (object, not self)'
-        elseif flags.OBJ then
-            return style .. ' (object)'
-        elseif flags.NOT_SELF then
-            return style .. ' (not self)'
-        end
-    end
-    return style
+  end
+  return style
 end
 
 function p.spell_info(frame)
