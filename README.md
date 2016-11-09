@@ -4,6 +4,7 @@ Lua modules and related tools for generating content for the Crawl Wiki (http://
 ## Modules
 * `spell.lua` -> http://crawl.chaosforge.org/Module:Spell
 * `spellbook.lua` -> http://crawl.chaosforge.org/Module:Spellbook
+* `string.lua` -> http://crawl.chaosforge.org/Module:String
 
 ## Data Tables
 [json-data branch](https://github.com/plampila/crawl/tree/json-data) of Crawl includes a tool that outputs a JSON data table.
