@@ -14,7 +14,7 @@ end
 
 local function format_schools(frame, schools, no_link_for)
   local ret = ''
-  for school in pairs(schools) do
+  for _, school in ipairs(table_keys_sorted(schools)) do
     if school == no_link_for then
       ret = ret .. school .. '/'
     else
@@ -69,7 +69,7 @@ function p.spellbook_table(frame)
 ! Tile || Spell || Type || Level
 ]==]
   local letters = 'abcdefghijklmnopqrstuvwxyz'
-  for i,name in pairs(book_data[book].spells) do
+  for i,name in ipairs(book_data[book].spells) do
     result = result .. '|-\n| [[File:' .. name:lower() .. '.png]] || ' ..
        letters:sub(i, i) .. ' - [[' .. name .. ']] || ' ..
        format_schools(frame, spell_data[name].schools) .. ' || ' ..
@@ -89,7 +89,7 @@ function p.short_spell_list(frame)
   local result = "'''[[" .. book:gsub('^%l', string.upper) .. "]]''': "
   local spell_list = {}
   book = book:gsub('^Book of', 'book of')
-  for _,name in pairs(book_data[book].spells) do
+  for _,name in ipairs(book_data[book].spells) do
     if school == nil or spell_data[name]['schools'][school] then
       table.insert(spell_list, '[['.. name .. ']]')
     end
