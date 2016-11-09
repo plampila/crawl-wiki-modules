@@ -55,4 +55,18 @@ function p.school_to_skill(frame)
   end
 end
 
+-- Used for getting correct sort key for categories
+function p.sort_key(frame)
+  local name = frame.args[1]
+  local key = name
+    :gsub('^[Bb]ook of ', '')
+    :gsub('^[Aa] ', '')
+    :gsub('^[Tt]he ', '')
+  if key == '' then
+    return name
+  else
+    return key
+  end
+end
+
 return p
