@@ -125,7 +125,8 @@ local function spell_table_line(frame, name, info, no_link_for)
          '|style="padding-left:1em"|[[' .. name .. ']]\n' ..
          '|' .. format_schools(frame, info['schools'], no_link_for) .. '\n' ..
          '|' .. info['level'] .. '\n' ..
-         '|' .. info['power cap'] .. '\n' ..
+         '|' .. (info['power cap'] == 0 and 'N/A' or info['power cap']) ..
+         '\n' ..
          '|' .. format_range(info['range']) .. '\n' ..
          '|' .. format_noise(info['noise']) .. '\n' ..
          '|' .. format_flags(info['flags']) .. '\n' ..
@@ -314,7 +315,7 @@ function p.spell_info(frame)
   args.sources = format_books(spell.books)
   args.castingnoise = spell.noise.casting
   args.spellnoise = spell.noise.effect
-  args['power cap'] = spell['power cap']
+  args['power cap'] = spell['power cap'] == 0 and 'N/A' or spell['power cap']
   args.targetting = format_targetting(spell.flags)
   args.range = format_range(spell.range)
   args.rarity = spell.rarity
