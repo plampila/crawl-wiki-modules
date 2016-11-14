@@ -167,12 +167,15 @@ function p.spell_table_by_level(frame)
 end
 
 function p.spell_table_by_school(frame)
-  local schools = { 'Air', 'Charms', 'Conjuration', 'Earth', 'Fire', 'Hexes',
-    'Ice', 'Necromancy', 'Poison', 'Summoning', 'Translocation',
-    'Transmutation' }
+  local schools = {}
+  for _,spell in pairs(data) do
+    for school in pairs(spell['schools']) do
+      schools[school] = true
+    end
+  end
 
   local ret = '==Spells==\n' .. spell_table_header()
-  for _,school in ipairs(schools) do
+  for _,school in ipairs(table_keys_sorted(schools)) do
     ret = ret .. spell_table_section(
       frame:expandTemplate{title = 'schoollink', args = {school}})
     for _, name in ipairs(names_by_level(data)) do
