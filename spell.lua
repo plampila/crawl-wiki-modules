@@ -2,12 +2,12 @@ local p = {}
 local data = mw.loadData('Module: Table of spells')
 local RANGE_LOS = 7
 
-local function table_keys_sorted(t)
+local function table_keys_sorted(t, f)
   local keys = {}
   for k in pairs(t) do
     table.insert(keys, k)
   end
-  table.sort(keys)
+  table.sort(keys, f)
   return keys
 end
 
@@ -107,9 +107,14 @@ local function format_flags(flags, ignored)
   return ret:sub(1, -3)
 end
 
+local function compare_books(a, b)
+  return a:lower():gsub('^book of ', ''):gsub('^a ', ''):gsub('^the ', '') <
+    b:lower():gsub('^book of ', ''):gsub('^a ', ''):gsub('^the ', '')
+end
+
 local function format_books(books)
   local ret = ''
-  for _, book in ipairs(table_keys_sorted(books)) do
+  for _, book in ipairs(table_keys_sorted(books, compare_books)) do
     ret = ret .. '[[' .. book:gsub('^%l', string.upper) .. ']]<br>'
   end
   return ret:sub(1, -5)
@@ -196,7 +201,7 @@ function p.spell_table_by_book(frame)
   end end
 
   local ret = '==Spells==\n' .. spell_table_header()
-  for _,book in ipairs(table_keys_sorted(books)) do
+  for _,book in ipairs(table_keys_sorted(books, compare_books)) do
     ret = ret ..
       spell_table_section('[[' .. book:gsub('^%l', string.upper) .. ']]')
     for _, name in ipairs(names_by_level(data)) do
