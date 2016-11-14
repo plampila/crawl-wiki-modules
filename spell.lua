@@ -236,21 +236,28 @@ function p.spell_table_by_flag(frame)
   return ret .. '|}'
 end
 
-local function format_hated_by(flags)
+local function format_hated_by(spell)
   local output = ''
-  if flags.HASTY then
+  if spell.flags.HASTY then
     output = output .. '[[Cheibriados]]<br>'
   end
-  if flags.CORPSE_VIOLATING then
+  if spell.schools.Fire then
+    output = output .. '[[Dithmenos]]<br>'
+  end
+  if spell.flags.CORPSE_VIOLATING then
     output = output .. '[[Fedhas]]<br>'
   end
-  if flags.UNHOLY then
+  if spell.flags.UNHOLY or spell.schools.Necromancy then
     output = output .. '[[Elyvilon]]<br>'
   end
-  if flags.UNHOLY then
+  if spell.flags.UNHOLY or spell.schools.Necromancy or spell.schools.Poison then
     output = output .. '[[The Shining One]]<br>'
   end
-  if flags.CHAOTIC or flags.UNCLEAN or flags.UNHOLY then
+  if spell.name == 'Statue Form' then
+    output = output .. '[[Yredelemnul]]<br>'
+  end
+  if spell.flags.CHAOTIC or spell.flags.UNCLEAN or spell.flags.UNHOLY or
+    spell.schools.Necromancy then
     output = output .. '[[Zin]]<br>'
   end
   return output:sub(1, -5)
@@ -302,7 +309,7 @@ function p.spell_info(frame)
   args.targetting = format_targetting(spell.flags)
   args.range = format_range(spell.range)
   args.rarity = spell.rarity
-  args['hated by'] = format_hated_by(spell.flags)
+  args['hated by'] = format_hated_by(spell)
   args.flags = format_flags(spell.flags, {
     CHAOTIC = true,
     CORPSE_VIOLATING = true,
