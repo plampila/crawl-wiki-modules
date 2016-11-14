@@ -3,12 +3,12 @@ local p = {}
 local book_data = mw.loadData('Module:Table of spellbooks')
 local spell_data = mw.loadData('Module:Table of spells')
 
-local function table_keys_sorted(t)
+local function table_keys_sorted(t, f)
   local keys = {}
   for k in pairs(t) do
     table.insert(keys, k)
   end
-  table.sort(keys)
+  table.sort(keys, f)
   return keys
 end
 
@@ -98,6 +98,11 @@ function p.short_spell_list(frame)
   return result
 end
 
+local function compare_books(a, b)
+  return a:lower():gsub('^book of ', ''):gsub('^a ', ''):gsub('^the ', '') <
+    b:lower():gsub('^book of ', ''):gsub('^a ', ''):gsub('^the ', '')
+end
+
 function p.spell_sources(frame)
   local school = frame.args[1]
   local primary_books = frame.args[2]
@@ -107,7 +112,9 @@ function p.spell_sources(frame)
   if primary_books ~= nil and primary_books ~= '' then
     ret = ret .. ';Main Texts\n'
     for book in string.gmatch(primary_books, '[^,]+') do
-      ret = ret .. ':' .. frame:expandTemplate{title = 'spellbook2', args = {book, school}} .. '\n'
+      ret = ret .. ':' ..
+        frame:expandTemplate{title = 'spellbook2', args = {book, school}} ..
+        '\n'
       done[book:gsub('^Book of', 'book of')] = true
     end
   end
@@ -125,9 +132,10 @@ function p.spell_sources(frame)
 
   if next(found) ~= nil then
     ret = ret .. ';Other Texts\n'
-    -- TODO: ignore "the" while sorting
-    for _,book in ipairs(table_keys_sorted(found)) do
-      ret = ret .. ':' .. frame:expandTemplate{title = 'spellbook2', args = {book, school}} .. '\n'
+    for _,book in ipairs(table_keys_sorted(found, compare_books)) do
+      ret = ret .. ':' ..
+        frame:expandTemplate{title = 'spellbook2', args = {book, school}} ..
+        '\n'
     end
   end
 
