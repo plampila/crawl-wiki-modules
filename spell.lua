@@ -110,7 +110,7 @@ end
 local function format_books(books)
   local ret = ''
   for _, book in ipairs(table_keys_sorted(books)) do
-    ret = ret .. '[[' .. book .. ']]<br>'
+    ret = ret .. '[[' .. book:gsub('^%l', string.upper) .. ']]<br>'
   end
   return ret:sub(1, -5)
 end
@@ -194,7 +194,8 @@ function p.spell_table_by_book(frame)
 
   local ret = '==Spells==\n' .. spell_table_header()
   for _,book in ipairs(table_keys_sorted(books)) do
-    ret = ret .. spell_table_section('[[' .. book .. ']]')
+    ret = ret ..
+      spell_table_section('[[' .. book:gsub('^%l', string.upper) .. ']]')
     for _, name in ipairs(names_by_level(data)) do
       if data[name]['books'][book] then
         ret = ret .. spell_table_line(frame, name, data[name])
