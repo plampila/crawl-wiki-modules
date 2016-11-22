@@ -276,7 +276,7 @@ local function format_hated_by(spell)
       output = output .. '[[Category:Chaotic Spells]]'
     end
     if spell.flags.UNHOLY then
-      output = output .. '[[Category:Unholy Spells]]'
+      output = output .. '[[Category:Evil Spells]]'
     end
     output = output .. '<br>'
   end
