@@ -249,13 +249,13 @@ end
 local function format_hated_by(spell)
   local output = ''
   if spell.flags.HASTY then
-    output = output .. '[[Cheibriados]]<br>'
+    output = output .. '[[Cheibriados]][[Category:Hasty Spells]]<br>'
   end
   if spell.schools.Fire then
     output = output .. '[[Dithmenos]]<br>'
   end
   if spell.flags.CORPSE_VIOLATING then
-    output = output .. '[[Fedhas]]<br>'
+    output = output .. '[[Fedhas]][[Category:Corpse Violating Spells]]<br>'
   end
   if spell.flags.UNHOLY or spell.schools.Necromancy then
     output = output .. '[[Elyvilon]]<br>'
@@ -268,7 +268,17 @@ local function format_hated_by(spell)
   end
   if spell.flags.CHAOTIC or spell.flags.UNCLEAN or spell.flags.UNHOLY or
     spell.schools.Necromancy then
-    output = output .. '[[Zin]]<br>'
+    output = output .. '[[Zin]]'
+    if spell.flags.UNCLEAN then
+      output = output .. '[[Category:Unclean Spells]]'
+    end
+    if spell.flags.CHAOTIC then
+      output = output .. '[[Category:Chaotic Spells]]'
+    end
+    if spell.flags.UNHOLY then
+      output = output .. '[[Category:Unholy Spells]]'
+    end
+    output = output .. '<br>'
   end
   return output:sub(1, -5)
 end
@@ -309,7 +319,8 @@ function p.spell_info(frame)
   args.level = spell.level
   for i,school in ipairs(table_keys_sorted(spell.schools)) do
     args['school' .. i] =
-      frame:expandTemplate{title = 'schoollink', args = {school}}
+      frame:expandTemplate{title = 'schoollink', args = {school}} ..
+      '[[Category:' .. school .. ' Spells]]'
     i = i + 1
   end
   args.sources = format_books(spell.books)
