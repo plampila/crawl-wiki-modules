@@ -327,6 +327,7 @@ function p.spell_info(frame)
   args.castingnoise = spell.noise.casting
   args.spellnoise = spell.noise.effect
   args['power cap'] = spell['power cap'] == 0 and 'N/A' or spell['power cap']
+  args['summons limit'] = spell['summons limit']
   args.targetting = format_targetting(spell.flags)
   args.range = format_range(spell.range)
   args.rarity = spell.rarity
